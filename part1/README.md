@@ -38,6 +38,8 @@ This document serves as the technical blueprint for the HBnB Evolution project. 
     Facade --> BusinessLogicLayer : Calls Business Logic Methods
     BusinessLogicLayer --> PersistenceLayer : Accesses Database via Repositories
 
+<img src="http://www.image-heberg.fr/files/17397897962575252538.png" alt="package diagram.png" />
+
 ### 1.2 Explanatory Notes for High-Level Architecture
 
 The HBnB Evolution application follows a three-layer architecture:
@@ -59,7 +61,7 @@ The HBnB Evolution application follows a three-layer architecture:
 ## 2. Business Logic Layer
 ### 2.1 Detailed Class Diagram
 
-classDiagram
+    classDiagram
     class User {
         +String id
         +String username
@@ -122,6 +124,8 @@ classDiagram
     User "1" --> "*" Review : Writes
     Place "1" --> "*" Amenity : Has
 
+<img src="http://www.image-heberg.fr/files/17397901493863901734.png" alt="class diagram for business logic layer-2025-02-16-220344.png" />
+
 ### 2.2 Explanatory Notes for Business Logic Layer
 
 The Business Logic Layer contains the models representing the key entities in the system:
@@ -163,6 +167,7 @@ sequenceDiagram
     UserModel->>Facade: Returns success
     Facade->>API: Sends success response
     API->>User: Returns success message
+<img src="http://www.image-heberg.fr/files/17397902811092922111.png" alt="sequence diagrams for user registration-2025-02-16-223854.png" />
 
 ### 3.2 Explanatory Notes for User Registration Sequence Diagram
 
@@ -192,6 +197,7 @@ sequenceDiagram
     PlaceModel->>Facade: Returns success
     Facade->>API: Sends success response
     API->>User: Returns place created message
+<img src="http://www.image-heberg.fr/files/17397903391410209946.png" alt="sequence diagrams for place creation-2025-02-16-224057.png" />
 
 ### 3.4 Explanatory Notes for Place Creation Sequence Diagram
 
@@ -214,6 +220,8 @@ sequenceDiagram
     PlaceModel->>Facade: Sends list of places
     Facade->>API: Sends list of places to User
     API->>User: Returns list of places response
+
+<img src="http://www.image-heberg.fr/files/17397903921060725517.png" alt="sequence diagrams fetch list of places-2025-02-16-225018.png" />
 
 ### 3.6 Explanatory Notes for Fetching a List of Places
 
@@ -246,15 +254,17 @@ sequenceDiagram
     Facade->>API: Sends success response
     API->>User: Returns review submission confirmation
 
+<img src="http://www.image-heberg.fr/files/17397904863992770754.png" alt="sequence diagrams for review submission-2025-02-16-224410.png" />
+
 ### 3.8 Explanatory Notes for Review Submission Sequence Diagram
 
 The Review Submission process works as follows:
 
-    The User submits a review via the API.
-    The API calls the submitReview() method from the Facade.
-    The Facade creates a new ReviewModel and interacts with the ReviewRepository to store the review in the database.
-    Once the review is saved, the ReviewModel returns a success response, which is passed back through the Facade to the API.
-    Finally, the API sends the review submission confirmation back to the User.
+- The User submits a review via the API.
+- The API calls the submitReview() method from the Facade.
+- The Facade creates a new ReviewModel and interacts with the ReviewRepository to store the review in the database.
+- Once the review is saved, the ReviewModel returns a success response, which is passed back through the Facade to the API.
+- Finally, the API sends the review submission confirmation back to the User.
 
 
 ## Conclusion
