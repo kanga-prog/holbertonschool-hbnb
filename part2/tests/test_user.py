@@ -1,4 +1,4 @@
-# tests/test_user.py
+#!/usr/bin/python3
 from app.models.user import User
 
 def test_user_creation():
