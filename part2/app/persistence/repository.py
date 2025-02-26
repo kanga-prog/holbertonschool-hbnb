@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from app.models.base_model import BaseModel
 
 class Repository(ABC):
     @abstractmethod
@@ -49,6 +50,7 @@ class InMemoryRepository(Repository):
             return None  # L'utilisateur n'a pas été trouvé
         # Mettre à jour les informations de l'utilisateur
         obj.__dict__.update(obj_data)
+        obj.save()
         return obj
 
     def delete(self, obj_id):

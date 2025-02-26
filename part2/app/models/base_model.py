@@ -10,11 +10,11 @@ class BaseModel:
         self.updated_at = datetime.now()
 
     def save(self):
-        """Met à jour le timestamp de 'updated_at' lorsque l'objet est modifié"""
+        """Mets à jour le timestamp de 'updated_at' lorsque l'objet est modifié"""
         self.updated_at = datetime.now()
 
     def update(self, data):
-        """Met à jour les attributs de l'objet à partir d'un dictionnaire de données"""
+        """Mets à jour les attributs de l'objet à partir d'un dictionnaire de données"""
         for key, value in data.items():
             if hasattr(self, key):
                 setattr(self, key, value)
