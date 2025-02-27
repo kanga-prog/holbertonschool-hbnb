@@ -145,3 +145,16 @@ class Reviews(Resource):
                 }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+        
+    @api.response(200, 'List of reviews fetched successfully')
+    @api.response(404, 'Place not found')
+    def get(self, place_id):
+        """Get all reviews for a specific place"""
+        try:
+            place = facade.get_place(place_id)  # Récupérer le lieu par ID
+            reviews = [{'id': review.id,
+                        'text': review.text,
+                        'rating': review.rating} for review in place.reviews]
+            return reviews, 200
+        except ValueError as e:
+            return {'message': str(e)}, 404
