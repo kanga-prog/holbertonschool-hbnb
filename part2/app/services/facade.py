@@ -115,18 +115,20 @@ class HBnBFacade:
     def create_review(self, review_data):
         """Créer un nouvel avis"""
         # Récupérer l'utilisateur à partir du dépôt des utilisateurs (pas des reviews)
-        user_id = self.user_repo.get(review_data['user_id'])
+        user = self.user_repo.get(review_data['user_id'])
         # Récupérer le lieu à partir du dépôt des lieux (pas des reviews)
-        place_id = self.place_repo.get(review_data['place_id'])
+        place = self.place_repo.get(review_data['place_id'])
     
         review = Review(
             text=review_data['text'],
             rating=review_data['rating'],
-            user=user_id,
-            place=place_id
+            user=user,
+            place=place,
         )
         review.save()  # Sauvegarde l'avis dans l'InMemoryRepository
         self.review_repo.add(review)
+        place.reviews.append(review)
+        place.save()
         return review
 
     def get_review(self, review_id):
