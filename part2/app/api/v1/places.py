@@ -5,6 +5,15 @@ from app.services import facade  # Importing the facade that holds the business 
 
 api = Namespace('places', description='Operations on places')
 
+# Model for reviews
+review_model = api.model('Review', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(required=True, description='Review text'),
+    'rating': fields.Integer(required=True, description='Review rating (1 to 5)'),
+    'user_id': fields.String(required=True, description='ID of the user who wrote the review'),
+    'place_id': fields.String(required=True, description='ID of the place being reviewed')
+})
+
 # Model for amenities
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
@@ -27,7 +36,7 @@ place_model = api.model('Place', {
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
     'owner_id': fields.String(required=True, description='Owner\'s ID'),
-    'amenities': fields.List(fields.String, required=True, description="List of Amenity IDs")
+    'amenities': fields.List(fields.String, required=False, description="List of Amenity IDs")
 })
 
 @api.route('/')
@@ -48,7 +57,8 @@ class PlaceList(Resource):
                 'price': new_place.price,
                 'latitude': new_place.latitude,
                 'longitude': new_place.longitude,
-                'owner_id': new_place.owner.id,}, 201
+                'owner_id': new_place.owner.id,
+                    }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
 
@@ -62,8 +72,8 @@ class PlaceList(Resource):
                 'id': place.id,
                 'title': place.title,
                 'latitude': place.latitude,
-                'longitude': place.longitude
-            })
+                'longitude': place.longitude,
+                'reviews': place.reviews})
         return result, 200
 
 @api.route('/<place_id>')
@@ -81,6 +91,10 @@ class PlaceResource(Resource):
                 'last_name': place.owner.last_name,
                 'email': place.owner.email
             }
+            reviews = [{'id': review.id,
+                        'text': review.text,
+                        'rating': review.rating,
+                        'user_id': review.user.id} for review in place.reviews]
             return {
                 'id': place.id,
                 'title': place.title,
@@ -89,7 +103,8 @@ class PlaceResource(Resource):
                 'latitude': place.latitude,
                 'longitude': place.longitude,
                 'owner': owner,
-                'amenities': amenities
+                'amenities': amenities,
+                'reviews': reviews
             }, 200
         except ValueError as e:
             return {'message': str(e)}, 404
@@ -107,4 +122,26 @@ class PlaceResource(Resource):
         except ValueError as e:
             return {'message': str(e)}, 404
         except Exception as e:
+            return {'message': str(e)}, 400
+
+@api.route('/<place_id>/reviews')
+class Reviews(Resource):
+    @api.expect(review_model)
+    @api.response(201, 'Review added successfully')
+    @api.response(400, 'Invalid input data')
+    def post(self, place_id):
+        """Add a review for a place"""
+        review_data = api.payload
+        review_data['place_id'] = place_id  # Associate the review with the place_id
+        try:
+        # Call the facade to create the review
+            new_review = facade.create_review(review_data)
+            return {
+                 'id': new_review.id,
+                    'text': new_review.text,
+                    'rating': new_review.rating,
+                    'user_id': new_review.user.id,
+                    'place_id': new_review.place.id
+                }, 201
+        except ValueError as e:
             return {'message': str(e)}, 400

@@ -4,12 +4,14 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
+from app.models.review import Review
 
 class HBnBFacade:
     def __init__(self):
         self.user_repo = InMemoryRepository()
         self.amenity_repo = InMemoryRepository()
         self.place_repo = InMemoryRepository()
+        self.review_repo = InMemoryRepository()
 
     def create_user(self, user_data):
         user = User(**user_data)
@@ -109,5 +111,46 @@ class HBnBFacade:
         if place_data.get('amenities'):
             amenities = [self.amenity_repo.get(amenity_id) for amenity_id in place_data['amenities']]
             place.amenities = amenities
-        self.place_repo.update(place_id, place)
         return place
+    def create_review(self, review_data):
+        """Créer un nouvel avis"""
+        # Récupérer l'utilisateur à partir du dépôt des utilisateurs (pas des reviews)
+        user_id = self.user_repo.get(review_data['user_id'])
+        # Récupérer le lieu à partir du dépôt des lieux (pas des reviews)
+        place_id = self.place_repo.get(review_data['place_id'])
+    
+        review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            user=user_id,
+            place=place_id
+        )
+        review.save()  # Sauvegarde l'avis dans l'InMemoryRepository
+        self.review_repo.add(review)
+        return review
+
+    def get_review(self, review_id):
+        """Récupérer un avis par ID"""
+        review = self.review_repo.get(review_id)
+        if not review:
+            raise ValueError("Avis non trouvé")
+        return review
+
+    def get_all_reviews(self):
+        """Récupérer tous les avis"""
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        """Récupérer tous les avis pour un lieu spécifique"""
+        reviews = self.review_repo.get_all()
+        return [review for review in reviews if review.place_id == place_id]
+
+    def update_review(self, review_id, review_data):
+        """Mettre à jour un avis existant"""
+        review = self.get_review(review_id)
+        review.text = review_data.get('text', review.text)
+        review.rating = review_data.get('rating', review.rating)
+        review.validate_review()
+        review.save()  # Sauvegarder les modifications dans l'InMemoryRepository
+        return review
+

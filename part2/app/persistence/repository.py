@@ -44,15 +44,15 @@ class InMemoryRepository(Repository):
         return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
 
     def update(self, obj_id, obj_data):
-        """Mettre à jour un utilisateur avec les nouvelles données."""
+        "set data"
         obj = self.get(obj_id)
         if not obj:
-            return None  # L'utilisateur n'a pas été trouvé
-        # Mettre à jour les informations de l'utilisateur
+            return None # no object found
+        # set data of the object
         obj.__dict__.update(obj_data)
         obj.save()
         return obj
-
+    
     def delete(self, obj_id):
         if obj_id in self._storage:
             del self._storage[obj_id]
