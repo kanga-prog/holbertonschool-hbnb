@@ -26,17 +26,19 @@ class Place(BaseModel):
 
     def validate_place(self):
         """Valide les attributs du lieu selon les consignes"""
-        if not self.title or len(self.title) > 100:
-            raise ValueError("Le titre du lieu doit être une chaîne non vide de moins de 100 caractères.")
+        if not self.title:
+            raise ValueError("The place must have a title")
+        if len(self.title) > 100:
+            raise ValueError("The title must be fewer than 100 characters.")
         if self.price <= 0:
-            raise ValueError("Le prix doit être positif.")
+            raise ValueError("Price must be a positive number.")
         if not (-90 <= self.latitude <= 90):
-            raise ValueError("La latitude doit être comprise entre -90 et 90.")
+            raise ValueError("Latitude must be between -90 and 90.")
         if not (-180 <= self.longitude <= 180):
-            raise ValueError("La longitude doit être comprise entre -180 et 180.")
+            raise ValueError("Longitude must be beeween -180 and 180.")
         if not isinstance(self.owner, User):
-            raise ValueError("Le propriétaire doit être une instance valide de la classe User.")
-
+            raise ValueError("Invalid user.")
+        
     def add_review(self, review):
         """Ajoute une revue à la place"""
         self.reviews.append(review)

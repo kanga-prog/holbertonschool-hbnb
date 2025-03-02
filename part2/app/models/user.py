@@ -17,4 +17,8 @@ class User(BaseModel):
         """Valide l'email"""
         regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
         if not re.match(regex, self.email):
-            raise ValueError("L'email est invalide.")
+            raise ValueError("Invalid email.")
+        if not self.first_name:
+            raise ValueError("Please enter your first name")
+        if not self.last_name:
+            raise ValueError("Please enter your last name")

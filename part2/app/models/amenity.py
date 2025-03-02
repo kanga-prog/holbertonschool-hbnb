@@ -7,4 +7,4 @@ class Amenity(BaseModel):
         super().__init__()
         self.name = name  # Nom de l'équipement
         if len(self.name) > 50:
-            raise ValueError("Le nom de l'équipement ne doit pas dépasser 50 caractères.")
+            raise ValueError("The amenity name must be fewer than 50 characters.")

@@ -28,6 +28,8 @@ class ReviewList(Resource):
                     'place_id': new_review.place.id}, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+        except Exception as e:  # Catch all other exceptions
+            return {'message': str(e)}, 400
 
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
@@ -47,14 +49,16 @@ class ReviewResource(Resource):
         """Get a review by its ID"""
         try:
             review = facade.get_review(review_id)
+            if not review:
+                return {'message': 'Review not found'}
             return {'id': review.id,
                     'text': review.text,
                     'rating': review.rating,
                     'user_id': review.user.id,
                     'place_id': review.place.id}, 200
-        except ValueError:
+        except Exception as e:  # Catch all other exceptions
             return {'message': 'Review not found'}, 404
-
+        
     @api.expect(review_model)
     @api.response(200, 'Review updated successfully')
     @api.response(400, 'Invalid input data')
@@ -70,4 +74,5 @@ class ReviewResource(Resource):
                     'place_id': updated_review.place.id}, 200
         except ValueError as e:
             return {'message': str(e)}, 400
-
+        except Exception as e:  # Catch all other exceptions
+            return {'message': str(e)}, 400

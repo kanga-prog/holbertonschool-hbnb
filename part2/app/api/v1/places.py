@@ -61,6 +61,8 @@ class PlaceList(Resource):
                     }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+        except Exception as e:
+            return {'message': str(e)}, 404
 
     @api.response(200, 'List of places fetched successfully')
     def get(self):
@@ -107,8 +109,10 @@ class PlaceResource(Resource):
                 'reviews': reviews
             }, 200
         except ValueError as e:
-            return {'message': str(e)}, 404
-
+            return {'message': 'Place not found'}, 404
+        except Exception as e:
+            return {'message': 'Place not found'}, 404
+        
     @api.expect(place_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
@@ -120,9 +124,9 @@ class PlaceResource(Resource):
             updated_place = facade.update_place(place_id, place_data)
             return {"message": "Place updated successfully"}, 200
         except ValueError as e:
-            return {'message': str(e)}, 404
-        except Exception as e:
             return {'message': str(e)}, 400
+        except Exception as e:
+            return {'message': str(e)}, 404
 
 @api.route('/<place_id>/reviews')
 class Reviews(Resource):
@@ -145,6 +149,8 @@ class Reviews(Resource):
                 }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
+        except Exception as e:
+            return {'message': str(e)}, 400
         
     @api.response(200, 'List of reviews fetched successfully')
     @api.response(404, 'Place not found')
@@ -157,4 +163,6 @@ class Reviews(Resource):
                         'rating': review.rating} for review in place.reviews]
             return reviews, 200
         except ValueError as e:
-            return {'message': str(e)}, 404
+            return {'message': 'Place not found'}, 404
+        except Exception as e:
+            return {'message': 'Place not found'}, 404

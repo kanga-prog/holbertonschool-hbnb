@@ -25,6 +25,8 @@ class AmenityList(Resource):
                     'name': new_amenity.name}, 201
         except Exception as e:
             return {"message": str(e)}, 400
+        except Exception as e:  # Catch all other exceptions
+            return {'message': str(e)}, 400
 
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
@@ -55,9 +57,14 @@ class AmenityResource(Resource):
         """Update an amenity's information"""
         # Extract data from the request and update the amenity
         data = api.payload
-        updated_amenity = facade.update_amenity(amenity_id, data)
-        if updated_amenity:
-            return {
-                    'id': updated_amenity.id,
-                    'name': updated_amenity.name}, 201
-        return {'message': 'Amenity not found'}, 404
+        try:
+            updated_amenity = facade.update_amenity(amenity_id, data)
+            if updated_amenity:
+                return {
+                        'id': updated_amenity.id,
+                        'name': updated_amenity.name}, 201
+            return {'message': 'Amenity not found'}, 404
+        except ValueError as e:
+            return {'message': str(e)}, 400
+        except Exception as e:  # Catch all other exceptions
+            return {'message': str(e)}, 404
