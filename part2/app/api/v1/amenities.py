@@ -23,10 +23,10 @@ class AmenityList(Resource):
             return {
                     'id': new_amenity.id,
                     'name': new_amenity.name}, 201
-        except Exception as e:
+        except ValueError as e:
             return {"message": str(e)}, 400
         except Exception as e:  # Catch all other exceptions
-            return {'message': str(e)}, 400
+            return {'message': 'invalid input data'}, 400
 
     @api.response(200, 'List of amenities retrieved successfully')
     def get(self):
