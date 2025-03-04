@@ -39,6 +39,14 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, required=False, description="List of Amenity IDs")
 })
 
+place_update_model = api.model('Place_update', {
+    'title': fields.String(required=True, description='Place title'),
+    'description': fields.String(description='Place description'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'owner_id': fields.String(required=False, description='Owner\'s ID'),
+    'amenities': fields.List(fields.String, required=False, description="List of Amenity IDs")
+})
+
 @api.route('/places')
 class PlaceList(Resource):
     @api.expect(place_model)
@@ -113,7 +121,7 @@ class PlaceResource(Resource):
         except Exception as e:
             return {'message': 'Place not found'}, 404
         
-    @api.expect(place_model)
+    @api.expect(place_update_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
@@ -121,7 +129,7 @@ class PlaceResource(Resource):
         """Update a place's information"""
         place_data = api.payload
         try:
-            updated_place = facade.update_place(place_id, place_data)
+            facade.update_place(place_id, place_data)
             return {"message": "Place updated successfully"}, 200
         except ValueError as e:
             return {'message': str(e)}, 400

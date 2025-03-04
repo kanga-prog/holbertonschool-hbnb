@@ -1,7 +1,6 @@
 # /app/models/place.py
 
 from datetime import datetime
-import uuid
 from .user import User  # Importation de User
 from .base_model import BaseModel
 
@@ -19,7 +18,8 @@ class Place(BaseModel):
         
         # Validation des attributs du lieu
         self.validate_place()
-
+        self.owner.place_list.append(self.id)
+    
     def validate_place(self):
         """Valide les attributs du lieu selon les consignes"""
         if not self.title:

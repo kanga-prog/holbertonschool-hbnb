@@ -135,7 +135,7 @@ class HBnBFacade:
         """Récupérer un avis par ID"""
         review = self.review_repo.get(review_id)
         if not review:
-            raise ValueError("Avis non trouvé")
+            return None
         return review
 
     def get_all_reviews(self):

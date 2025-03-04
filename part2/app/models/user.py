@@ -14,7 +14,7 @@ class User(BaseModel):
         self.place_list = place_list
         self.password = password
         self.validate_email()
-        
+
     def validate_email(self):
         """Valide l'email"""
         regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'

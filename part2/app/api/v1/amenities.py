@@ -10,6 +10,10 @@ amenity_model = api.model('Amenity', {
     'description': fields.String(required=True, description='Description of the amenity')
 })
 
+amenity_update_model = api.model('Amenity_upadate', {
+    'description': fields.String(required=True, description='Description of the amenity')
+})
+
 @api.route('/amenities')
 class AmenityList(Resource):
     @api.expect(amenity_model)
@@ -53,7 +57,7 @@ class AmenityResource(Resource):
                     'description': amenity.description}, 201
         return {'message': 'Amenity not found'}, 404
 
-    @api.expect(amenity_model)
+    @api.expect(amenity_update_model)
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
@@ -66,8 +70,7 @@ class AmenityResource(Resource):
             if updated_amenity:
                 return {
                         'id': updated_amenity.id,
-                        'name': updated_amenity.name,
-                        'description': updated_amenity.description}, 201
+                        'name': updated_amenity.name}, 201
             return {'message': 'Amenity not found'}, 404
         except ValueError as e:
             return {'message': str(e)}, 400
