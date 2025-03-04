@@ -11,7 +11,3 @@ config = {
     'development': DevelopmentConfig,
     'default': DevelopmentConfig
 }
-
-from models import Place, User
-Kanga=User('Brice', 'Kanga', 'brice@gmail.com', admin=True)
-kangaplace = Place(title='ma_maison', price=100, latitude=60, longitude=43, owner=Kanga, )

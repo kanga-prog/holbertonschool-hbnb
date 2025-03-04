@@ -39,7 +39,7 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, required=False, description="List of Amenity IDs")
 })
 
-@api.route('/')
+@api.route('/places')
 class PlaceList(Resource):
     @api.expect(place_model)
     @api.response(201, 'Place created successfully')
@@ -62,7 +62,7 @@ class PlaceList(Resource):
         except ValueError as e:
             return {'message': str(e)}, 400
         except Exception as e:
-            return {'message': str(e)}, 404
+            return {'message': str(e)}, 400
 
     @api.response(200, 'List of places fetched successfully')
     def get(self):
@@ -78,7 +78,7 @@ class PlaceList(Resource):
                 'reviews': place.reviews})
         return result, 200
 
-@api.route('/<place_id>')
+@api.route('/places/<place_id>')
 class PlaceResource(Resource):
     @api.response(200, 'Place details fetched successfully')
     @api.response(404, 'Place not found')
@@ -128,7 +128,7 @@ class PlaceResource(Resource):
         except Exception as e:
             return {'message': str(e)}, 404
 
-@api.route('/<place_id>/reviews')
+@api.route('/places/<place_id>/reviews')
 class Reviews(Resource):
     @api.expect(review_model)
     @api.response(201, 'Review added successfully')
@@ -162,7 +162,5 @@ class Reviews(Resource):
                         'text': review.text,
                         'rating': review.rating} for review in place.reviews]
             return reviews, 200
-        except ValueError as e:
-            return {'message': 'Place not found'}, 404
         except Exception as e:
             return {'message': 'Place not found'}, 404

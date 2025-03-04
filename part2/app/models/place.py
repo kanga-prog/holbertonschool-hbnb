@@ -6,18 +6,14 @@ from .user import User  # Importation de User
 from .base_model import BaseModel
 
 class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner: User, description=None):
+    def __init__(self, title, price, latitude, longitude, owner, description=None):
         super().__init__()
-        
-        self.id = str(uuid.uuid4())  # Identifiant unique généré automatiquement
         self.title = title  # Le titre du lieu (obligatoire, longueur maximale de 100 caractères)
         self.description = description  # La description est facultative
         self.price = price  # Le prix doit être positif
         self.latitude = latitude  # Latitude dans la plage (-90 <= latitude <= 90)
         self.longitude = longitude  # Longitude dans la plage (-180 <= longitude <= 180)
         self.owner = owner  # L'utilisateur qui est le propriétaire du lieu (instance de User)
-        self.created_at = datetime.now()  # Horodatage de la création du lieu
-        self.updated_at = datetime.now()  # Horodatage de la mise à jour du lieu
         self.reviews = []  # Liste des reviews pour ce lieu
         self.amenities = []  # Liste des équipements pour ce lieu
         

@@ -7,7 +7,9 @@ api = Namespace('users', description='User operations')
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
-    'email': fields.String(required=True, description='Email of the user')
+    'email': fields.String(required=True, description='Email of the user'),
+    'password': fields.String(required=True, description='Password of the user'),
+    'place_list': fields.List(fields.String, required=False, description='List of places owned by the user')
 })
 
 @api.route('/')
@@ -19,16 +21,13 @@ class UserList(Resource):
     def post(self): 
         """Register a new user"""
         user_data = api.payload
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)
+        # Simulate email uniqueness check (to be replaced by real validation with persistence)   
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
         try:
-            new_user = facade.create_user(user_data)
-            return {'id': new_user.id, 
-                    'first_name': new_user.first_name, 
-                    'last_name': new_user.last_name, 
-                    'email': new_user.email}, 201
+            new_user = facade.create_user(user_data)            
+            return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email, 'place_list': new_user.place_list}, 201
         except ValueError as e:
             return {'message': str(e)}, 400
         except Exception as e:  # Catch all other exceptions
@@ -41,15 +40,13 @@ class UserList(Resource):
     def get(self):
         """Retrieve a list of users"""
         users = facade.get_all_users()  # Ensure this method is defined in the facade
-        try :
-            if not users:
-                return {'error': 'No users found'}, 404
-            return [{'id': user.id, 
-                    'first_name': user.first_name, 
-                    'last_name': user.last_name, 
-                    'email': user.email} for user in users], 200
-        except Exception as e:  # Catch all other exceptions
-            return {'message': str(e)}, 400
+        if not users:
+            return {'error': 'No users found'}, 404
+        return [{'id': user.id, 
+                'first_name': user.first_name, 
+                'last_name': user.last_name, 
+                'email': user.email,
+                'palce_list': user.place_list} for user in users], 200
         
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -64,7 +61,8 @@ class UserResource(Resource):
         return {'id': user.id, 
                 'first_name': user.first_name, 
                 'last_name': user.last_name, 
-                'email': user.email}, 200
+                'email': user.email,
+                'place_list': user.place_list}, 200
         
     # PUT /api/v1/users/<user_id> - Update user details
     @api.expect(user_model, validate=True)
@@ -82,7 +80,8 @@ class UserResource(Resource):
                 'id': updated_user.id,
                 'first_name': updated_user.first_name,
                 'last_name': updated_user.last_name,
-                'email': updated_user.email
+                'email': updated_user.email,
+                'place_list': updated_user.place_list
             }, 200
         except Exception as e:  # Catch all other exceptions
             return {'message': str(e)}, 400
