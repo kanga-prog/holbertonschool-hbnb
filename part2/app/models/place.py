@@ -5,7 +5,7 @@ from .user import User  # Importation de User
 from .base_model import BaseModel
 
 class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner, description=None):
+    def __init__(self, title, price, latitude, longitude, owner, reviews=[], amenities=[], description=None):
         super().__init__()
         self.title = title  # Le titre du lieu (obligatoire, longueur maximale de 100 caractères)
         self.description = description  # La description est facultative
@@ -13,8 +13,8 @@ class Place(BaseModel):
         self.latitude = latitude  # Latitude dans la plage (-90 <= latitude <= 90)
         self.longitude = longitude  # Longitude dans la plage (-180 <= longitude <= 180)
         self.owner = owner  # L'utilisateur qui est le propriétaire du lieu (instance de User)
-        self.reviews = []  # Liste des reviews pour ce lieu
-        self.amenities = []  # Liste des équipements pour ce lieu
+        self.reviews = reviews # Liste des reviews pour ce lieu
+        self.amenities = amenities  # Liste des équipements pour ce lieu
         
         # Validation des attributs du lieu
         self.validate_place()
@@ -38,9 +38,7 @@ class Place(BaseModel):
     def add_review(self, review):
         """Ajoute une revue à la place"""
         self.reviews.append(review)
-        self.updated_at = datetime.now()  # Mise à jour du timestamp lors de l'ajout d'une revue
 
     def add_amenity(self, amenity):
         """Ajoute un équipement au lieu"""
         self.amenities.append(amenity)
-        self.updated_at = datetime.now()  # Mise à jour du timestamp lors de l'ajout d'un équipement

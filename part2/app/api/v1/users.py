@@ -46,7 +46,8 @@ class UserList(Resource):
                 'first_name': user.first_name, 
                 'last_name': user.last_name, 
                 'email': user.email,
-                'palce_list': user.place_list} for user in users], 200
+                'palce_list': user.place_list,
+                'reviews_posted': user.reviews_posted} for user in users], 200
         
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -62,7 +63,8 @@ class UserResource(Resource):
                 'first_name': user.first_name, 
                 'last_name': user.last_name, 
                 'email': user.email,
-                'place_list': user.place_list}, 200
+                'place_list': user.place_list,
+                'reviews_posted': user.reviews_posted}, 200
         
     # PUT /api/v1/users/<user_id> - Update user details
     @api.expect(user_model, validate=True)

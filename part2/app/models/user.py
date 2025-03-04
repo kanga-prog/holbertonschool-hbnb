@@ -5,7 +5,7 @@ import re  # Ajoutez l'importation du module re
 from .base_model import BaseModel
 
 class User(BaseModel):
-    def __init__(self, first_name, last_name, email, password, place_list=[], is_admin=False):
+    def __init__(self, first_name, last_name, email, password, place_list=[], reviews_posted = [], is_admin=False):
         super().__init__()  # Appel du constructeur de BaseModel pour générer l'id et les timestamps
         self.first_name = first_name
         self.last_name = last_name
@@ -13,7 +13,9 @@ class User(BaseModel):
         self.is_admin = is_admin
         self.place_list = place_list
         self.password = password
+        self.reviews_posted = reviews_posted
         self.validate_email()
+
 
     def validate_email(self):
         """Valide l'email"""

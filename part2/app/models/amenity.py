@@ -3,7 +3,7 @@
 from .base_model import BaseModel
 
 class Amenity(BaseModel):
-    def __init__(self, description, name=None):
+    def __init__(self, name, description=None):
         super().__init__()
         self.name = name  # Nom de l'équipement
         self.description = description

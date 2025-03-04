@@ -59,11 +59,7 @@ class HBnBFacade:
     def create_place(self, place_data):
         # Creates a place (property)
         owner = self.user_repo.get(place_data['owner_id'])
-        if not owner:
-            raise ValueError("The specified owner does not exist.")
-        
-        try:
-            place = Place(
+        place = Place(
                 title=place_data['title'],
                 description=place_data.get('description', ''),
                 price=place_data['price'],
@@ -71,14 +67,6 @@ class HBnBFacade:
                 longitude=place_data['longitude'],
                 owner=owner
             )
-        except ValueError as e:
-            raise ValueError(f"Error while creating the place: {str(e)}")
-        
-        # Adding amenities to the place
-        amenities = [self.amenity_repo.get(amenity_id) for amenity_id in place_data.get('amenities', [])]
-        for amenity in amenities:
-            place.add_amenity(amenity)
-        
         # Add the place to the in-memory repository
         self.place_repo.add(place)
         return place
