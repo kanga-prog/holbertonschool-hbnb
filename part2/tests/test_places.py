@@ -28,13 +28,14 @@ class TestPlaceEndpoints(unittest.TestCase):
         })
         
         owner_id = response0.get_json().get('id')
+        print(owner_id)
         response = self.client.post('/api/v1/places/', json={
             "title": "Cozy Apartment",
             "description": "A nice place to stay",
             "price": 75.0,
             "latitude": 47,
             "longitude": 14,
-            "owner": str(owner_id),
+            "owner": owner_id,
             "reviews": [],
             "amenities": []
         })

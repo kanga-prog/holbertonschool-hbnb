@@ -169,10 +169,9 @@ class Reviews(Resource):
     def get(self, place_id):
         """Get all reviews for a specific place"""
         try:
-            place = facade.get_place(place_id)  # Récupérer le lieu par ID
-            reviews = [{'id': review.id,
-                        'text': review.text,
-                        'rating': review.rating} for review in place.reviews]
-            return reviews, 200
+            reviews = facade.get_reviews_by_place(place_id)  # Récupérer le lieu par ID
+            return [{'id': review.id,
+                    'text': review.text,
+                    'rating': review.rating} for review in reviews], 200
         except Exception as e:
             return {'message': 'Place not found'}, 404
