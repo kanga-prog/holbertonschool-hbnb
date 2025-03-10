@@ -7,6 +7,10 @@ from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 
+
+# Import the configuration class
+from config import DevelopmentConfig
+
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     
