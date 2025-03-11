@@ -5,7 +5,7 @@ import re  # Ajoutez l'importation du module re
 from .base_model import BaseModel
 from flask_bcrypt import Bcrypt
 
-Bcrypt = Bcrypt
+bcrypt = Bcrypt()
 
 class User(BaseModel):
     def __init__(self, first_name, last_name, email, password, place_list=[], reviews_posted = [], is_admin=False):
@@ -32,9 +32,9 @@ class User(BaseModel):
         if not self.password:
             raise ValueError("Please enter your password")
     
-    def hash_password(self, password):
+    def hash_password(self):
         """Hache le mot de passe avant de le stocker."""
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password = bcrypt.generate_password_hash(self.password).decode('utf-8')
 
     def verify_password(self, password):
         """Vérifie si le mot de passe fourni correspond au mot de passe haché."""

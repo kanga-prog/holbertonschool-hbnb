@@ -14,9 +14,8 @@ class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')  # URL de connexion MySQL en production
 
-# Dictionnaire de configuration pour différents environnements
-config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig,
-    'default': DevelopmentConfig  # Par défaut, utiliser la configuration de développement
-}
+# Dictionnaire de configuration pour la rendre dynamique
+configurations = {
+    'development' : DevelopmentConfig,
+    'production' : ProductionConfig,
+    }
