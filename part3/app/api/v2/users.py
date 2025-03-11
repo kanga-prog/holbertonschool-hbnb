@@ -87,3 +87,4 @@ class UserResource(Resource):
             }, 200
         except Exception as e:  # Catch all other exceptions
             return {'message': str(e)}, 400
+
