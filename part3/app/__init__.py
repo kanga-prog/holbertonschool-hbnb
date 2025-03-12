@@ -5,12 +5,17 @@ from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 from config import DevelopmentConfig
-from flask_jwt_extendedn import JWTManager
+from flask_jwt_extended import JWTManager
+from app.api.v2.auth import api as auth_ns
+from app.api.v2.protected import api as protected_ns
+from flask_bcrypt import Bcrypt
 
+import os
 
 jwt = JWTManager()
-# intialise sqlalchemy sans la lier a une appli
 db = SQLAlchemy()
+bcrypt = Bcrypt()
+
 
 def create_app(config_class=config.DevelopmentConfig):
     app = Flask(__name__)
@@ -24,4 +29,14 @@ def create_app(config_class=config.DevelopmentConfig):
     api.add_namespace(users_ns, path='/api/v1/users')
     api.add_namespace(places_ns, path='/api/v1/places')
     api.add_namespace(reviews_ns, path= '/api/v1/reviews') 
+
+
+    #add the schema of JWT security in swagger
+    api.security = {
+            'BearerAuth': {
+                'type': 'apiKey',
+                'in': 'header',
+                'name': 'Authorization'
+                }
+            }
     return app
