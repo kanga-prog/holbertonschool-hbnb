@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from config import configurations
 from app.api.v2.auth import api as auth_ns
 from app.api.v2.protected import api as protected_ns
+from app.api.v2.admins import api as admins_ns
 
 import os
 
@@ -32,15 +33,10 @@ def create_app(config_class="development"):
     api.add_namespace(places_ns, path='/api/v1/places')
     api.add_namespace(reviews_ns, path='/api/v1/reviews')
     api.add_namespace(auth_ns, path='/api/v1/auth')
-    api.add_namespace(protected_ns, path='/api/v1')
+    api.add_namespace(protected_ns, path='/api/v1/protected') 
 
-    #add the schema of JWT security in swagger
-    api.security = {
-        'BearerAuth': {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization'
-        }
-    }
+    if config_class == "development":
+        api.add_namespace(admins_ns, path='/api/v1/admins')
 
+    
     return app

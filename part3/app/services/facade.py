@@ -36,7 +36,7 @@ class HBnBFacade:
 
     def create_amenity(self, amenity_data):
         # Create a new amenity and add it to the repository
-        amenity = Amenity(name=amenity_data["name"])
+        amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
 
@@ -105,12 +105,6 @@ class HBnBFacade:
         review = Review(**review_data)
         self.review_repo.add(review)
         return review
-    
-    def has_user_reviewed_place(self, user_id, place_id):
-        for review in self.review_repo:
-            if review.user_id == user_id and review.place_id == place_id:
-                return True
-            return False
         
     def get_review(self, review_id):
         """Récupérer un avis par ID"""

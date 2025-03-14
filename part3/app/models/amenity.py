@@ -3,7 +3,7 @@
 from .base_model import BaseModel
 
 class Amenity(BaseModel):
-    def __init__(self, name, description=None):
+    def __init__(self, name, description):
         super().__init__()
         self.name = name  # Nom de l'équipement
         self.description = description
@@ -11,5 +11,5 @@ class Amenity(BaseModel):
             raise ValueError("The amenity name must be fewer than 50 characters.")
         if not self.name:
             raise ValueError("The amenity must have a name") 
-        if not description:
+        if not self.description:
             raise ValueError("Please give a description")

@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('users', description='User operations')
 
@@ -10,32 +10,41 @@ user_model = api.model('User', {
     'last_name': fields.String(required=True, description='Last name of the user'),
     'email': fields.String(required=True, description='Email of the user'),
     'password': fields.String(required=True, description='Password of the user'),
-    'place_list': fields.List(fields.String, required=False, description='List of places owned by the user')
+    'is_admin': fields.Boolean(required=False, description='privileges of admin or not')
 })
 
 user_update_model = api.model('User', {
-    'first_name': fields.String(required=True, description='First name of the user'),
-    'last_name': fields.String(required=True, description='Last name of the user'),
+    'first_name': fields.String(required=False, description='First name of the user'),
+    'last_name': fields.String(required=False, description='Last name of the user'),
     'email': fields.String(required=False, description='Email of the user'),
     'password': fields.String(required=False, description='Password of the user'),
+    'is_admin': fields.Boolean(required=False, description='privileges of admin or not')
 })
 
 @api.route('/')
 class UserList(Resource):
     # POST /api/v1/users/ - Register a new user
+    @jwt_required()
     @api.expect(user_model, validate=True)
     @api.response(201, 'User successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')    
     def post(self): 
         """Register a new user"""
+        current_user = get_jwt_identity()
+        claims = get_jwt()
+        
+        if not claims.get('is_admin', False):
+            return {'error': 'Admin privileges required'}, 403
+        
         user_data = api.payload
-        # Simulate email uniqueness check (to be replaced by real validation with persistence)   
+        # Simulate email uniqueness check   
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
             return {'error': 'Email already registered'}, 400
         try:
             new_user = facade.create_user(user_data)            
-            return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email, 'place_list': new_user.place_list}, 201
+            return {'id': new_user.id, 'first_name': new_user.first_name, 'last_name': new_user.last_name, 'email': new_user.email}, 201
         except ValueError as e:
             return {'message': str(e)}, 400
         except Exception as e:  # Catch all other exceptions
@@ -82,9 +91,11 @@ class UserResource(Resource):
     @api.response(400, 'You cannot change your email or pzssword')
     def put(self, user_id):
         """Update user details"""
-        user_data = api.payload
         current_user = get_jwt_identity()
-        if user_id != current_user:
+        claims = get_jwt()
+        user_data = api.payload
+
+        if user_id != current_user and not claims.get('is_admin', False):
             return {'message': 'Unauthorized action'}, 403
         
         user = facade.get_user(user_id)
@@ -95,18 +106,25 @@ class UserResource(Resource):
         email = user_data.get('email')
         password = user_data.get('password')
 
-        # Prevent modification of the email or password
-        if email and email != user.email:
+        # Prevent modification of the email or password for normal user
+        if email and email != user.email and not claims.get('is_admin', False):
             return {'message': 'You cannot change your email or password'}, 400  # Return 400 if email is modified
-        if password and password != user.password:
+        if password and password != user.password and not claims.get('is_admin', False):
             return {'message': 'You cannot change your email or password'}, 400  # Return 400 if password is modified
         
         try:    
             updated_user = facade.update_user(user_id, user_data)  # This is where the user is updated
-            return {
+            if not claims.get('is_admin', False):
+                return {
                 'first_name': updated_user.first_name,
                 'last_name': updated_user.last_name,
             }, 200
+            else:
+                return {
+                'first_name': updated_user.first_name,
+                'last_name': updated_user.last_name,
+                'email' : updated_user.email
+            }, 200 
         except Exception as e:  # Catch all other exceptions
             return {'message': str(e)}, 400
 
