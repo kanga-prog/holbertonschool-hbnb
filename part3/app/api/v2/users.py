@@ -13,6 +13,13 @@ user_model = api.model('User', {
     'place_list': fields.List(fields.String, required=False, description='List of places owned by the user')
 })
 
+user_update_model = api.model('User', {
+    'first_name': fields.String(required=True, description='First name of the user'),
+    'last_name': fields.String(required=True, description='Last name of the user'),
+    'email': fields.String(required=False, description='Email of the user'),
+    'password': fields.String(required=False, description='Password of the user'),
+})
+
 @api.route('/')
 class UserList(Resource):
     # POST /api/v1/users/ - Register a new user
@@ -69,7 +76,7 @@ class UserResource(Resource):
         
     # PUT /api/v1/users/<user_id> - Update user details
     @jwt_required()
-    @api.expect(user_model, validate=True)
+    @api.expect(user_update_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
     @api.response(400, 'You cannot change your email or pzssword')
@@ -84,8 +91,15 @@ class UserResource(Resource):
         if not user:
             return {'error': 'User not found'}, 404
 
-        if user_data['email'] != user.email or user_data['password'] != user.password:
-            return {'message': 'You cannot change your email or password.'}, 400
+        # Check if the email or password are modified in the request
+        email = user_data.get('email')
+        password = user_data.get('password')
+
+        # Prevent modification of the email or password
+        if email and email != user.email:
+            return {'message': 'You cannot change your email or password'}, 400  # Return 400 if email is modified
+        if password and password != user.password:
+            return {'message': 'You cannot change your email or password'}, 400  # Return 400 if password is modified
         
         try:    
             updated_user = facade.update_user(user_id, user_data)  # This is where the user is updated
