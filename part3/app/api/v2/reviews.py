@@ -35,8 +35,8 @@ class ReviewList(Resource):
             
         # check if the user has already reviewed the place
         place_reviews = facade.get_reviews_by_place(review_data['place_id'])
-        for existing_review in place_reviews:
-            if existing_review.user_id == current_user: # dont make it a dict or you wont be able to make many reviews
+        for review in place_reviews:
+            if review.user_id == current_user: # dont make it a dict or you wont be able to make many reviews
                 return {'error': 'You have already reviewed this place'}, 400
 
         try:            
@@ -124,7 +124,7 @@ class ReviewResource(Resource):
                 return {'message': 'Review not found'}, 404
 
             # Check if the current user is the author of the review
-            if review.user.id != current_user:
+            if review.user_id != current_user:
                 return {'message': 'Unauthorized action'}, 403  # Return a 403 if the user is not the author
 
             # Proceed with deleting the review if the user is the author
