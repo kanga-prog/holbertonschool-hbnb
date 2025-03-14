@@ -58,14 +58,13 @@ class HBnBFacade:
 
     def create_place(self, place_data):
         # Creates a place (property)
-        owner = self.user_repo.get(place_data['owner_id'])
         place = Place(
                 title=place_data['title'],
                 description=place_data.get('description', ''),
                 price=place_data['price'],
                 latitude=place_data['latitude'],
                 longitude=place_data['longitude'],
-                owner=owner
+                owner_id=place_data['owner_id']
             )
         # Add the place to the in-memory repository
         self.place_repo.add(place)
@@ -100,25 +99,19 @@ class HBnBFacade:
             amenities = [self.amenity_repo.get(amenity_id) for amenity_id in place_data['amenities']]
             place.amenities = amenities
         return place
+    
     def create_review(self, review_data):
         """Créer un nouvel avis"""
-        # Récupérer l'utilisateur à partir du dépôt des utilisateurs (pas des reviews)
-        user = self.user_repo.get(review_data['user_id'])
-        # Récupérer le lieu à partir du dépôt des lieux (pas des reviews)
-        place = self.place_repo.get(review_data['place_id'])
-    
-        review = Review(
-            text=review_data['text'],
-            rating=review_data['rating'],
-            user=user,
-            place=place,
-        )
-        review.save()  # Sauvegarde l'avis dans l'InMemoryRepository
+        review = Review(**review_data)
         self.review_repo.add(review)
-        place.reviews.append(review)
-        place.save()
         return review
-
+    
+    def has_user_reviewed_place(self, user_id, place_id):
+        for review in self.review_repo:
+            if review.user_id == user_id and review.place_id == place_id:
+                return True
+            return False
+        
     def get_review(self, review_id):
         """Récupérer un avis par ID"""
         review = self.review_repo.get(review_id)
@@ -144,3 +137,7 @@ class HBnBFacade:
         review.save()  # Sauvegarder les modifications dans l'InMemoryRepository
         return review
 
+
+    def delete_review(self, review_id):
+        """Deletes a review by its ID."""
+        self.review_repo.delete(review_id)

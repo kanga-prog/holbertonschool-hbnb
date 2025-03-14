@@ -2,6 +2,7 @@
 
 from flask_restx import Namespace, Resource, fields
 from app.services import facade  # Importing the facade that holds the business logic
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Operations on places')
 
@@ -10,8 +11,8 @@ review_model = api.model('Review', {
     'id': fields.String(description='Review ID'),
     'text': fields.String(required=True, description='Review text'),
     'rating': fields.Integer(required=True, description='Review rating (1 to 5)'),
-    'user_id': fields.String(required=True, description='ID of the user who wrote the review'),
-    'place_id': fields.String(required=True, description='ID of the place being reviewed')
+    'user_id': fields.String(required=False, description='ID of the user who wrote the review'),
+    'place_id': fields.String(required=False, description='ID of the place being reviewed')
 })
 
 # Model for amenities
@@ -35,7 +36,7 @@ place_model = api.model('Place', {
     'price': fields.Float(required=True, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'owner_id': fields.String(required=True, description='Owner\'s ID'),
+    'owner_id': fields.String(required=False, description='Owner\'s ID'),
     'amenities': fields.List(fields.String, required=False, description="List of Amenity IDs")
 })
 
@@ -49,12 +50,15 @@ place_update_model = api.model('Place_update', {
 
 @api.route('/')
 class PlaceList(Resource):
+    @jwt_required()
     @api.expect(place_model)
     @api.response(201, 'Place created successfully')
     @api.response(400, 'Invalid input data')
     def post(self):
         """Register a new place"""
         place_data = api.payload
+        current_user = get_jwt_identity()
+        place_data['owner_id'] = current_user
         try:
             # Call facade method to create a place
             new_place = facade.create_place(place_data)
@@ -65,7 +69,7 @@ class PlaceList(Resource):
                 'price': new_place.price,
                 'latitude': new_place.latitude,
                 'longitude': new_place.longitude,
-                'owner_id': new_place.owner.id,
+                'owner_id': new_place.owner_id,
                     }, 201
         except ValueError as e:
             return {'message': str(e)}, 400
@@ -124,7 +128,8 @@ class PlaceResource(Resource):
             return {'message': 'Place not found'}, 404
         except Exception as e:
             return {'message': 'Place not found'}, 404
-        
+
+    @jwt_required()    
     @api.expect(place_update_model)
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
@@ -132,7 +137,11 @@ class PlaceResource(Resource):
     def put(self, place_id):
         """Update a place's information"""
         place_data = api.payload
+        current_user = get_jwt_identity()
         try:
+            place = facade.get_place(place_id) # retreive the place
+            if place.owner_id != current_user: # check if the owner of the place is the current user
+                return {'message': 'Unauthorized action'}, 403
             facade.update_place(place_id, place_data)
             return {"message": "Place updated successfully"}, 200
         except ValueError as e:
@@ -142,6 +151,7 @@ class PlaceResource(Resource):
 
 @api.route('/<place_id>/reviews')
 class Reviews(Resource):
+    @jwt_required()
     @api.expect(review_model)
     @api.response(201, 'Review added successfully')
     @api.response(400, 'Invalid input data')
@@ -149,15 +159,26 @@ class Reviews(Resource):
         """Add a review for a place"""
         review_data = api.payload
         review_data['place_id'] = place_id  # Associate the review with the place_id
+        current_user = get_jwt_identity()
+
         try:
-        # Call the facade to create the review
+            #check if the user is not the owner
+            place = facade.get_place(place_id)
+            if place.owner_id == current_user:
+                return {'message': 'You cannot review your own place'}
+            
+            # check if the user has already reviewed the place
+            if facade.has_user_reviewed_place(current_user, place_id):
+                return {'message': 'You have already reviewed this place'}, 400
+            
+            # Call the facade to create the review
             new_review = facade.create_review(review_data)
             return {
                  'id': new_review.id,
                     'text': new_review.text,
                     'rating': new_review.rating,
-                    'user_id': new_review.user.id,
-                    'place_id': new_review.place.id
+                    'user_id': new_review.user_id,
+                    'place_id': new_review.place_id
                 }, 201
         except ValueError as e:
             return {'message': str(e)}, 400

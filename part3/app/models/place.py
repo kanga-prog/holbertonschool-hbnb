@@ -5,20 +5,19 @@ from .user import User  # Importation de User
 from .base_model import BaseModel
 
 class Place(BaseModel):
-    def __init__(self, title, price, latitude, longitude, owner, reviews=[], amenities=[], description=None):
+    def __init__(self, title, price, latitude, longitude, owner_id = None, reviews=[], amenities=[], description=None):
         super().__init__()
         self.title = title  # Le titre du lieu (obligatoire, longueur maximale de 100 caractères)
         self.description = description  # La description est facultative
         self.price = price  # Le prix doit être positif
         self.latitude = latitude  # Latitude dans la plage (-90 <= latitude <= 90)
         self.longitude = longitude  # Longitude dans la plage (-180 <= longitude <= 180)
-        self.owner = owner  # L'utilisateur qui est le propriétaire du lieu (instance de User)
+        self.owner_id = owner_id  # L'utilisateur qui est le propriétaire du lieu (instance de User)
         self.reviews = reviews # Liste des reviews pour ce lieu
         self.amenities = amenities  # Liste des équipements pour ce lieu
         
         # Validation des attributs du lieu
         self.validate_place()
-        self.owner.place_list.append(self.id)
     
     def validate_place(self):
         """Valide les attributs du lieu selon les consignes"""
@@ -32,8 +31,6 @@ class Place(BaseModel):
             raise ValueError("Latitude must be between -90 and 90.")
         if not (-180 <= self.longitude <= 180):
             raise ValueError("Longitude must be beeween -180 and 180.")
-        if not isinstance(self.owner, User):
-            raise ValueError("Invalid user.")
         
     def add_review(self, review):
         """Ajoute une revue à la place"""
