@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restx import Api
+from flask_sqlalchemy import SQLAlchemy
 from app.api.v2.users import api as users_ns
 from app.api.v2.amenities import api as amenities_ns
 from app.api.v2.places import api as places_ns
@@ -10,7 +11,6 @@ from config import configurations
 from app.api.v2.auth import api as auth_ns
 from app.api.v2.protected import api as protected_ns
 from app.api.v2.admins import api as admins_ns
-from flask_sqlalchemy import SQLAlchemy
 import os
 
 bcrypt = Bcrypt()

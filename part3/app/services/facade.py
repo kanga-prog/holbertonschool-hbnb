@@ -1,20 +1,23 @@
 # app/serrvices/facade.py
-
-from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+from app.services.repositories.user_repository import UserRepository
+from app.services.repositories.place_repository import PlaceRepository
+from app.services.repositories.review_repository import ReviewRepository
+from app.services.repositories.amenity_repository import AmenityRepository
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
+        self.user_repo = UserRepository()
+        self.amenity_repo = AmenityRepository()
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
 
     def create_user(self, user_data):
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -33,6 +36,10 @@ class HBnBFacade:
         if not updated_user:
             return None  # L'utilisateur n'a pas été trouvé
         return updated_user
+    
+    def delete_user(self, user_id):
+        """deletes an user"""
+        return self.user_repo.delete(user_id)
 
     def create_amenity(self, amenity_data):
         # Create a new amenity and add it to the repository
@@ -55,6 +62,10 @@ class HBnBFacade:
             amenity.name = amenity_data.get('name', amenity.name)
             return amenity
         return None
+    
+    def delete_amenity(self, amenity_id):
+        """deletes an user"""
+        return self.amenity_repo.delete(amenity_id)
 
     def create_place(self, place_data):
         # Creates a place (property)
@@ -79,26 +90,12 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
-        # Updates an existing place
-        place = self.place_repo.get(place_id)
-        if not place:
-            return None  # Place not found
-        # Updating the place's details
-        if place_data.get('title'):
-            place.title = place_data['title']
-        if place_data.get('description'):
-            place.description = place_data['description']
-        if place_data.get('price') is not None:
-            place.price = place_data['price']
-        if place_data.get('latitude') is not None:
-            place.latitude = place_data['latitude']
-        if place_data.get('longitude') is not None:
-            place.longitude = place_data['longitude']
-        # Adding or updating amenities
-        if place_data.get('amenities'):
-            amenities = [self.amenity_repo.get(amenity_id) for amenity_id in place_data['amenities']]
-            place.amenities = amenities
-        return place
+        """Update a place"""
+        return self.place_repo.update(place_id, place_data)
+    
+    def delete_place(self, place_id):
+        """Deletes a review by its ID."""
+        self.place_repo.delete(place_id)
     
     def create_review(self, review_data):
         """Créer un nouvel avis"""
@@ -130,7 +127,6 @@ class HBnBFacade:
         review.validate_review()
         review.save()  # Sauvegarder les modifications dans l'InMemoryRepository
         return review
-
 
     def delete_review(self, review_id):
         """Deletes a review by its ID."""

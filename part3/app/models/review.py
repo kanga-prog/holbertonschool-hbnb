@@ -1,9 +1,14 @@
 # /app/models/review.py
 from .base_model import BaseModel
-from .user import User  # Importation de User
-from .place import Place  # Importation de Place
+from app import db
 
 class Review(BaseModel):
+    __tablename__ = 'reviews'
+
+    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
+    text = db.Column(db.String(255), nullable=False)  # Texte de l'avis
+    rating = db.Column(db.Integer, nullable=False)  # Note
+    
     def __init__(self, text, rating, place_id = None, user_id = None):
         super().__init__()
         self.text = text  # Texte de la revue
