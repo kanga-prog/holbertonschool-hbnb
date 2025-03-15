@@ -3,9 +3,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 
 api = Namespace('Protected', description='A protected endpoint that requires a valid JWT token')
 
-@api.route('/protected')
+@api.route('/')
 class ProtectedResource(Resource):
-    @api.doc(security='BearerAuth')  # Déclarer la sécurité ici pour Swagger
     @jwt_required()  # Ce décorateur vérifie que le token JWT est valide
     def get(self):
         """Un endpoint protégé qui nécessite un token JWT valide"""
@@ -17,3 +16,4 @@ class ProtectedResource(Resource):
             'message': f'Hello, user {current_user_identity}',
             'is_admin': claims.get("is_admin", False)  # Si l'utilisateur est admin, récupérer cette info
         }, 200
+

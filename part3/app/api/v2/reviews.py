@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 api = Namespace('reviews', description='Review operations')
 
 # Define the review model for input validation and documentation
@@ -89,6 +89,7 @@ class ReviewResource(Resource):
         """Update a review"""
         review_data = api.payload
         current_user = get_jwt_identity()
+        claims = get_jwt()
         try:
             #retrieve the review by its id
             review = facade.get_review(review_id)
@@ -96,7 +97,7 @@ class ReviewResource(Resource):
                 return {'message': 'Review not found'}, 404
 
             #check if the current user is the author of he review
-            if review.user_id != current_user:
+            if review.user_id != current_user and claims.get('is_admin', False):
                 return {'message' : 'Unauthorized action'}, 403
             
             updated_review = facade.update_review(review_id, review_data)
@@ -116,7 +117,7 @@ class ReviewResource(Resource):
     def delete(self, review_id):
         """Delete a review by its ID"""
         current_user = get_jwt_identity()  # Get the currently authenticated user's ID
-
+        claims = get_jwt()
         try:
             # Fetch the review from the database using the review_id
             review = facade.get_review_by_id(review_id)
@@ -124,8 +125,8 @@ class ReviewResource(Resource):
                 return {'message': 'Review not found'}, 404
 
             # Check if the current user is the author of the review
-            if review.user_id != current_user:
-                return {'message': 'Unauthorized action'}, 403  # Return a 403 if the user is not the author
+            if review.user_id != current_user and claims.get('is_admin', False):
+                return {'message': 'Unauthorized action'}, 403  # Return a 403 if the user is neither the author nor an admin
 
             # Proceed with deleting the review if the user is the author
             facade.delete_review(review_id)

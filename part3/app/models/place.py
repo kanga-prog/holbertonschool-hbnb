@@ -3,8 +3,18 @@
 from datetime import datetime
 from .user import User  # Importation de User
 from .base_model import BaseModel
+from app import db
 
 class Place(BaseModel):
+    __tablename__ = 'places'
+
+    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
+    title = db.Column(db.String(100), nullable=False)  # Titre du lieu
+    description = db.Column(db.String(255), nullable=False)  # Description du lieu
+    price = db.Column(db.Float, nullable=False)  # Prix par nuit
+    latitude = db.Column(db.Float, nullable=False)  # Latitude
+    longitude = db.Column(db.Float, nullable=False)  # Longitude
+
     def __init__(self, title, price, latitude, longitude, owner_id = None, reviews=[], amenities=[], description=None):
         super().__init__()
         self.title = title  # Le titre du lieu (obligatoire, longueur maximale de 100 caractères)

@@ -2,8 +2,15 @@
 
 import uuid
 from datetime import datetime
+from app import db
 
-class BaseModel:
+class BaseModel(db.model):
+    __abstract__= True # cela garantit que sql ne cree pas de table pour cette classe
+
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
     def __init__(self):
         self.id = str(uuid.uuid4())  # Générer un identifiant unique (UUID)
         self.created_at = datetime.now()

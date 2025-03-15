@@ -40,6 +40,5 @@ class Login(Resource):
 @api.route('/admin_token')
 class GenerateAdminToken(Resource):
     def get(self):
-        admin_token = create_access_token(identity="admin", expires_delta=timedelta(days=365),
-                                    additional_claims={"is_admin": True})
+        admin_token = create_access_token(identity="admin", expires_delta=timedelta(days=365), additional_claims={"is_admin": True})
         return ({'admin_token': admin_token})

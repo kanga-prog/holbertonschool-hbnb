@@ -4,10 +4,18 @@ import re  # Ajoutez l'importation du module re
 
 from .base_model import BaseModel
 from flask_bcrypt import Bcrypt
-
+from app import db
 bcrypt = Bcrypt()
 
 class User(BaseModel):
+    __tablename__ = 'users'  # Name of the table in the database
+
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)  # Ensure unique email
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
     def __init__(self, first_name, last_name, email, password, place_list=[], reviews_posted = [], is_admin=False):
         super().__init__()  # Appel du constructeur de BaseModel pour générer l'id et les timestamps
         self.first_name = first_name

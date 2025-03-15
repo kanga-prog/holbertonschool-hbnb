@@ -1,8 +1,14 @@
 # /app/models/amenity.py
 
 from .base_model import BaseModel
+from app import db
 
 class Amenity(BaseModel):
+    __tablename__ = 'amenities'
+
+    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
+    name = db.Column(db.String(100), nullable=False)  # Nom de l'aménagement
+
     def __init__(self, name, description):
         super().__init__()
         self.name = name  # Nom de l'équipement

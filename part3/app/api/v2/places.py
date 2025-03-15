@@ -143,14 +143,37 @@ class PlaceResource(Resource):
             place = facade.get_place(place_id) # retreive the place
             if not place:
                 return {'error': 'Place not found'}, 404
-            if place.owner_id != current_user and claims.get('is_admin', False): # check if the owner of the place is the current user
+            if place.owner_id != current_user and claims.get('is_admin', False): # check if the owner of the place is the current user or an admin
                 return {'message': 'Unauthorized action'}, 403
             facade.update_place(place_id, place_data)
             return {"message": "Place updated successfully"}, 200
         except ValueError as e:
             return {'message': str(e)}, 400
         except Exception as e:
-            return {'message': str(e)}, 404
+            return {'message': str(e)}, 400
+    
+    @jwt_required()
+    @api.response(404, 'Place not found')
+    @api.response(400, 'Invalid input data')
+    def delete(self, place_id):
+        """Delete an existing place"""
+        current_user = get_jwt_identity()  # Get the current user's identity from the JWT token
+        claims = get_jwt()  # Get the claims (including is_admin) from the JWT token
+
+        # Retrieve the place to be deleted
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404  # If place does not exist, return 404 Not Found
+
+        # Check if the current user is the owner of the place or if the user is an admin
+        if place.owner_id != current_user and not claims.get('is_admin', False):
+            return {'error': 'YAdmin privileges required'}, 403  # Return 403 Forbidden
+
+        # Delete the place using the facade
+        facade.delete_place(place_id)
+
+        # Return a success message
+        return {'message': 'Place deleted successfully'}, 200
 
 @api.route('/<place_id>/reviews')
 class Reviews(Resource):
