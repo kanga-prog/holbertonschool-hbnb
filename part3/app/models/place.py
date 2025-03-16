@@ -4,6 +4,7 @@ from datetime import datetime
 from .user import User  # Importation de User
 from .base_model import BaseModel
 
+
 class Place(BaseModel):
     def __init__(self, title, price, latitude, longitude, owner, reviews=[], amenities=[], description=None):
         super().__init__()

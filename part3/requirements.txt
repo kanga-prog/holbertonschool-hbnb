@@ -1,6 +1,6 @@
 flask
 flask -restx
-flash-bcrypt
+flask-bcrypt
 flask-jwt-extended
 sqlalchemy
 flask-sqlalchemy

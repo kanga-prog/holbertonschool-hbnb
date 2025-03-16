@@ -123,13 +123,14 @@ class AdminUserResource(Resource):
         # Logic to update user details, including email and password
         try: 
             updtate_user = facade.update_user(user_id, data)
-            return {'message': 'User update successfully', 'user': {
-                'id': updated_user.id,
-                'first_name': updated_user.first_name,
-                'last_name': updated_user.last_name,
-                'email': updated_user.email,
-                'is_admin': updated_user.is_admin
-                }}, 200
+            return {'message': 'User update successfully',
+                    'user': {
+                        'id': updated_user.id,
+                        'first_name': updated_user.first_name,
+                        'last_name': updated_user.last_name,
+                        'email': updated_user.email,
+                        'is_admin': updated_user.is_admin
+                        }}, 200
         except ValueError as e:
             return {'error': str(e)}, 400
         except Exception as e:
@@ -153,13 +154,14 @@ class AdminUserCreate(Resource):
         # Logic to create a new user
         try:
             new_user = facade.create_user(user_id, data)
-            return {'message': 'User update successfully', 'user': {
-                'id': new_user.id,
-                'first_name': new_users.first_name,
-                'last_name': new_user.last_name,
-                'email': new_user.email,
-                'is_admin': new_user.is_admin
-                }}, 201
+            return {'message': 'User update successfully',
+                    'user': {
+                        'id': new_user.id,
+                        'first_name': new_users.first_name,
+                        'last_name': new_user.last_name,
+                        'email': new_user.email,
+                        'is_admin': new_user.is_admin
+                        }}, 201
         except ValueError as e:
             return {'error': str(e)}, 400
         except Exception as e:
@@ -184,16 +186,18 @@ class AdminUserModify(Resource):
             if existing_user and existing_user.id != user_id:
                 return {'error': 'Email already in use'}, 400
 
-        # Logic to update user details
-         try:
-             updtate_user = facade.update_user(user_id, data)
-            return {'message': 'User update successfully', 'user': {
-                'id': updated_user.id,
-                'first_name': updated_user.first_name,
-                'last_name': updated_user.last_name,
-                'email': updated_user.email,
-                'is_admin': updated_user.is_admin
-                }}, 200
+        try:
+             updated_user = facade.updated_user(user_id, data)
+             return {
+                     'message': 'User updated successfully',
+                     'user': {
+                         'id': updated_user.id,
+                         'first_name': updated_user.first_name,
+                         'last_name': updated_user.last_name,
+                         'email': updated_user.email,
+                         'is_admin': updated_user.is_admin
+                         }
+                     }, 200
         except ValueError as e:
             return {'error': str(e)}, 400
         except Exception as e:

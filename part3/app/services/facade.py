@@ -76,6 +76,9 @@ class HBnBFacade:
     def get_place(self, place_id):
         # Retrieves a place by ID
         return self.place_repo.get(place_id)
+        if not place:
+            raise ValueError(f"Place with ID {place_id} not found")
+        return place
 
     def get_all_places(self):
         # Retrieves all places

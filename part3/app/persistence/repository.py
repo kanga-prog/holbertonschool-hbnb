@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from app.models.base_model import BaseModel
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+
+db = SQLAlchemy()
 
 
 class Repository(ABC):
