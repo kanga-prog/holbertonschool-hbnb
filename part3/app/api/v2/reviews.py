@@ -120,7 +120,7 @@ class ReviewResource(Resource):
         claims = get_jwt()
         try:
             # Fetch the review from the database using the review_id
-            review = facade.get_review_by_id(review_id)
+            review = facade.get_review(review_id)
             if not review:
                 return {'message': 'Review not found'}, 404
 

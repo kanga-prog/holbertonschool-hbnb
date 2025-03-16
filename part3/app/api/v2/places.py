@@ -196,9 +196,10 @@ class Reviews(Resource):
             if place.owner_id == current_user:
                 return {'message': 'You cannot review your own place'}
             
-            # check if the user has already reviewed the place
-            if facade.has_user_reviewed_place(current_user, place_id):
-                return {'message': 'You have already reviewed this place'}, 400
+            place_reviews = facade.get_reviews_by_place(review_data['place_id'])
+            for existing_review in place_reviews:
+                if existing_review.user_id == current_user: # dont make it a dict or you wont be able to make many reviews
+                    return {'error': 'You have already reviewed this place'}, 400
             
             # Call the facade to create the review
             new_review = facade.create_review(review_data)
