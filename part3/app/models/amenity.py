@@ -2,12 +2,15 @@
 
 from .base_model import BaseModel
 from app import db
+from app.models.place import place_amenity
 
 class Amenity(BaseModel):
     __tablename__ = 'amenities'
 
-    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
     name = db.Column(db.String(100), nullable=False)  # Nom de l'aménagement
+    description = db.Column(db.String(500), nullable=True)
+
+    associated_places = db.relationship('Place', secondary=place_amenity, backref='amenities_associated')
 
     def __init__(self, name, description):
         super().__init__()

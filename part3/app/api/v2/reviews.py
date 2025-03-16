@@ -125,7 +125,7 @@ class ReviewResource(Resource):
                 return {'message': 'Review not found'}, 404
 
             # Check if the current user is the author of the review
-            if review.user_id != current_user and claims.get('is_admin', False):
+            if review.user_id != current_user and not claims.get('is_admin', False):
                 return {'message': 'Unauthorized action'}, 403  # Return a 403 if the user is neither the author nor an admin
 
             # Proceed with deleting the review if the user is the author

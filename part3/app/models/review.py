@@ -5,9 +5,13 @@ from app import db
 class Review(BaseModel):
     __tablename__ = 'reviews'
 
-    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
     text = db.Column(db.String(255), nullable=False)  # Texte de l'avis
     rating = db.Column(db.Integer, nullable=False)  # Note
+
+    #relations
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
+    
     
     def __init__(self, text, rating, place_id = None, user_id = None):
         super().__init__()

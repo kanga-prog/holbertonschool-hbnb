@@ -16,15 +16,17 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-    def __init__(self, first_name, last_name, email, password, place_list=[], reviews_posted = [], is_admin=False):
+    # Relations : one user can have many places and many reviews
+    places = db.relationship('Place', backref='user', lazy=True)
+    reviews = db.relationship('Review', backref='user', lazy=True)
+
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         super().__init__()  # Appel du constructeur de BaseModel pour générer l'id et les timestamps
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.password = password
         self.is_admin = is_admin
-        self.place_list = place_list
-        self.reviews_posted = reviews_posted
         self.validate_email()
         self.hash_password()
 

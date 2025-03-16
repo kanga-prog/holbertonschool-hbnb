@@ -58,7 +58,6 @@ class PlaceList(Resource):
         """Register a new place"""
         place_data = api.payload
         current_user = get_jwt_identity()
-        place_data['owner_id'] = current_user
         try:
             # Call facade method to create a place
             new_place = facade.create_place(place_data)
@@ -91,7 +90,7 @@ class PlaceList(Resource):
                 'longitude' : place.longitude, 
                 'owner' : place.owner.id, 
                 'reviews' : place.reviews, 
-                'amenities' : place.amenities} for place in places], 200
+                'amenities' : place.associated_amenities} for place in places], 200
 
 
 @api.route('/<place_id>')
@@ -100,34 +99,37 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """Get place details by ID"""
-        try:
-            place = facade.get_place(place_id)
-            amenities = [{'id': amenity.id, 'name': amenity.name} for amenity in place.amenities]
-            owner = {
-                'id': place.owner.id,
-                'first_name': place.owner.first_name,
-                'last_name': place.owner.last_name,
-                'email': place.owner.email
-            }
-            reviews = [{'id': review.id,
-                        'text': review.text,
-                        'rating': review.rating,
-                        'user_id': review.user.id} for review in place.reviews]
-            return {
+        place = facade.get_place(place_id)
+        if not place:
+            return {'message': 'Place not found'}, 404
+        # Récupérer les amenities associées à la place
+        amenities = []
+        for amenity in place.associated_amenities:
+            amenities.append({
+                'id': amenity.id,
+                'name': amenity.name,
+                'description': amenity.description
+            })
+        
+        # Récupérer les reviews associées à la place
+        reviews = []
+        for review in place.reviews:
+            reviews.append({
+                'id': review.id,
+                'text': review.text,
+                'created_at': review.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Format de date
+            })
+
+        return {
                 'id': place.id,
                 'title': place.title,
                 'description': place.description,
                 'price': place.price,
                 'latitude': place.latitude,
                 'longitude': place.longitude,
-                'owner': owner,
                 'amenities': amenities,
                 'reviews': reviews
             }, 200
-        except ValueError as e:
-            return {'message': 'Place not found'}, 404
-        except Exception as e:
-            return {'message': 'Place not found'}, 404
 
     @jwt_required()    
     @api.expect(place_update_model)
@@ -143,8 +145,9 @@ class PlaceResource(Resource):
             place = facade.get_place(place_id) # retreive the place
             if not place:
                 return {'error': 'Place not found'}, 404
-            if place.owner_id != current_user and claims.get('is_admin', False): # check if the owner of the place is the current user or an admin
+            if place.owner_id != current_user and not claims.get('is_admin', False): # check if the owner of the place is the current user or an admin
                 return {'message': 'Unauthorized action'}, 403
+            
             facade.update_place(place_id, place_data)
             return {"message": "Place updated successfully"}, 200
         except ValueError as e:
@@ -167,7 +170,7 @@ class PlaceResource(Resource):
 
         # Check if the current user is the owner of the place or if the user is an admin
         if place.owner_id != current_user and not claims.get('is_admin', False):
-            return {'error': 'YAdmin privileges required'}, 403  # Return 403 Forbidden
+            return {'error': 'Admin privileges required'}, 403  # Return 403 Forbidden
 
         # Delete the place using the facade
         facade.delete_place(place_id)

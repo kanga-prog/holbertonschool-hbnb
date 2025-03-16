@@ -5,15 +5,26 @@ from .user import User  # Importation de User
 from .base_model import BaseModel
 from app import db
 
+place_amenity = db.Table('place_amenity',
+    db.Column('place_id', db.Integer, db.ForeignKey('places.id'), primary_key=True),
+    db.Column('amenity_id', db.Integer, db.ForeignKey('amenities.id'), primary_key=True)
+)
+
+
 class Place(BaseModel):
     __tablename__ = 'places'
 
-    id = db.Column(db.Integer, primary_key=True)  # Clé primaire
     title = db.Column(db.String(100), nullable=False)  # Titre du lieu
     description = db.Column(db.String(255), nullable=False)  # Description du lieu
     price = db.Column(db.Float, nullable=False)  # Prix par nuit
     latitude = db.Column(db.Float, nullable=False)  # Latitude
     longitude = db.Column(db.Float, nullable=False)  # Longitude
+
+    # Relations
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    reviews = db.relationship('Review', backref='place', lazy=True)
+    associated_amenities = db.relationship('Amenity', secondary=place_amenity, backref='places_associated')
+
 
     def __init__(self, title, price, latitude, longitude, owner_id = None, reviews=[], amenities=[], description=None):
         super().__init__()
