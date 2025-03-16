@@ -5,8 +5,6 @@ from app.services import facade  # Importing the facade that holds the business 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('places', description='Operations on places')
-api.add_resource(Reviews, '/<int:place_id>/reviews')
-api.add_resource(PlaceList, '/')
 
 # Model for reviews
 review_model = api.model('Review', {
@@ -95,7 +93,7 @@ class PlaceList(Resource):
             'owner' : place.owner.id, 
             'reviews' : place.reviews, 
             'amenities' : place.amenities} for place in places], 200
-
+        api.add_resource(PlaceList, '/')
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
@@ -132,7 +130,7 @@ class PlaceResource(Resource):
             return {'message': 'Place not found'}, 404
         except Exception as e:
             return {'message': 'Place not found'}, 404
-api.add_resource(PlaceResource, '/<int:place_id>')
+        api.add_resource(PlaceResource, '/<int:place_id>')
 
 @api.expect(place_update_model)
 @api.response(200, 'Place updated successfully')
@@ -152,7 +150,8 @@ def put(self, place_id):
         return {'message': str(e)}, 400
     except Exception as e:
         return {'message': str(e)}, 404
-@api.route('/<place_id>/reviews')
+
+
 class Reviews(Resource):
     @api.expect(review_model)
     @api.response(201, 'Review added successfully')
@@ -175,16 +174,17 @@ class Reviews(Resource):
             return {'message': str(e)}, 400
         except Exception as e:
             return {'message': str(e)}, 400
-
-    @api.response(200, 'List of reviews fetched successfully')
-    @api.response(404, 'Place not found')
-    def get(self, place_id):
-        """Get all reviews for a specific place"""
-        try:
-            place = facade.get_place(place_id)  # Récupérer le lieu par ID
-            reviews = [{'id': review.id,
-                'text': review.text,
-                'rating': review.rating} for review in place.reviews]
-            return reviews, 200
-        except Exception as e:
-            return {'message': 'Place not found'}, 404
+        
+        @api.route('/<place_id>/reviews')
+        @api.response(200, 'List of reviews fetched successfully')
+        @api.response(404, 'Place not found')
+        def get(self, place_id):
+            """Get all reviews for a specific place"""
+            try:
+                place = facade.get_place(place_id)  # Récupérer le lieu par ID
+                reviews = [{'id': review.id,
+                    'text': review.text,
+                    'rating': review.rating} for review in place.reviews]
+                return reviews, 200
+            except Exception as e:
+                return {'message': 'Place not found'}, 404

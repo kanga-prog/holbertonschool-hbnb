@@ -3,8 +3,6 @@ from app.services import facade
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
-api.add_resource(Review_list, '/')
-api.add_resource(Review_resource, '/<int:review_id>')
 
 # Define the review model for input validation and documentation
 review_model = api.model('Review', {
@@ -50,6 +48,8 @@ class ReviewList(Resource):
         except Exception as e:  # Catch all other exceptions
             return {'message': str(e)}, 400
 
+        api.add_resource(Review_list, '/')
+
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
         """Get all reviews"""
@@ -78,6 +78,8 @@ class ReviewResource(Resource):
                     'place_id': review.place.id}, 200
         except Exception as e:  # Catch all other exceptions
             return {'message': 'Review not found'}, 404
+
+        api.add_resource(Review_resource, '/<int:review_id>')
 
     @api.expect(review_update_model)
     @api.response(200, 'Review updated successfully')
