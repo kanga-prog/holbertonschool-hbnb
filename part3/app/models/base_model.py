@@ -1,10 +1,9 @@
 # /app/models/base_model.py
-
 import uuid
 from datetime import datetime
 from app import db
 
-class BaseModel(db.model):
+class BaseModel(db.Model):
     __abstract__= True # cela garantit que sql ne cree pas de table pour cette classe
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
