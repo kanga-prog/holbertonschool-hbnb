@@ -22,7 +22,7 @@ class Login(Resource):
         user = facade.get_user_by_email(credentials['email'])
         
         # Étape 2 : Vérifier si l'utilisateur existe et si le mot de passe est correct
-        if not user or not user.verify_password(credentials['password']):
+        if not user.verify_password(credentials['password']):
             return {'error': 'Invalid credentials'}, 401
         
         #check if the user is an admin.

@@ -62,9 +62,7 @@ class UserList(Resource):
         return [{'id': user.id, 
                 'first_name': user.first_name, 
                 'last_name': user.last_name, 
-                'email': user.email,
-                'palce_list': user.place_list,
-                'reviews_posted': user.reviews_posted} for user in users], 200
+                'email': user.email,} for user in users], 200
         
 @api.route('/<user_id>')
 class UserResource(Resource):
