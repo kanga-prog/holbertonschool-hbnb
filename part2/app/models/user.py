@@ -3,6 +3,9 @@
 import re  # Ajoutez l'importation du module re
 
 from .base_model import BaseModel
+from flask_bcrypt import Bcrypt
+
+Bcrypt = Bcrypt
 
 class User(BaseModel):
     def __init__(self, first_name, last_name, email, password, place_list=[], reviews_posted = [], is_admin=False):
@@ -10,12 +13,11 @@ class User(BaseModel):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.password = password
         self.is_admin = is_admin
         self.place_list = place_list
-        self.password = password
         self.reviews_posted = reviews_posted
         self.validate_email()
-
 
     def validate_email(self):
         """Valide l'email"""
