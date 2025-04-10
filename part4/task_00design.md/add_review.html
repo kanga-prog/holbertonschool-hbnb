@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+        <nav>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="login.html" class="nav-link">Login</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="review-container">
+            <h2>Add a Review</h2>
+
+            <label for="place-id">Place ID:</label>
+            <input type="text" id="place-id" name="place-id" required placeholder="Enter the Place ID">
+
+            <label for="review">Your Review:</label>
+            <textarea id="review" name="review" required placeholder="Write your review here..."></textarea>
+
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="">Choose a rating</option>
+                <option value="1">1 - Very bad</option>
+                <option value="2">2 - Bad</option>
+                <option value="3">3 - Okay</option>
+                <option value="4">4 - Good</option>
+                <option value="5">5 - Excellent</option>
+            </select>
+
+            <button type="submit" class="submit-review-button">Submit Review</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 All Rights Reserved</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

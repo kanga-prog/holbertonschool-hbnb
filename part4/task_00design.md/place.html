@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+        <nav>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="login.html" class="nav-link">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="place-details">
+            <!-- Détails du lieu -->
+            <h2>Place Name</h2>
+            <p id="place-description">Detailed description of the place will appear here. The place offers great amenities, spacious rooms, and a beautiful view.</p>
+            <p><strong>Host:</strong> John Doe</p>
+            <p><strong>Price:</strong> $150/night</p>
+            <p><strong>Amenities:</strong> Free Wi-Fi, Pool, Parking, Restaurant</p>
+        </section>
+
+        <section id="reviews">
+            <h3>Reviews</h3>
+            <!-- Liste des avis -->
+            <div class="review-card">
+                <p><strong>Jane Doe</strong> - Rating: 5</p>
+                <p>This place is amazing! The host was super friendly, and the location was perfect.</p>
+            </div>
+
+            <div class="review-card">
+                <p><strong>John Smith</strong> - Rating: 4</p>
+                <p>Good stay. The room was clean and cozy, but the Wi-Fi was a bit slow.</p>
+            </div>
+        </section>
+
+        <section id="add-review">
+            <h3>Add a Review</h3>
+            <p>Write a review about your stay at this place.</p>
+            <form id="review-form">
+                <label for="review-text">Review:</label>
+                <textarea id="review-text" name="review-text" required placeholder="Write your review here..."></textarea>
+
+                <label for="review-rating">Rating:</label>
+                <select id="review-rating" name="review-rating" required>
+                    <option value="1">1 - Very Bad</option>
+                    <option value="2">2 - Bad</option>
+                    <option value="3">3 - Okay</option>
+                    <option value="4">4 - Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+
+                <button type="submit" class="submit-review-button">Submit Review</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 All Rights Reserved</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
