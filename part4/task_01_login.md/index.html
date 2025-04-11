@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Places</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+        <nav>
+            <a href="login.html" class="nav-link login-button">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="filter-section">
+            <label for="price-filter">Filter by price:</label>
+            <select id="price-filter">
+                <option value="">All</option>
+            </select>
+        </section>
+
+        <section id="places-list" class="places-list">
+            <!-- Dynamic place cards inserted here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 All Rights Reserved</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
+
