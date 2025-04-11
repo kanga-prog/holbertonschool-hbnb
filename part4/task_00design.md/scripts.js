@@ -1,19 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     const places = [
-        { id: 1, name: 'Place 1', price: 100, description: 'Nice place with a view.', host: 'Alice', amenities: ['WiFi', 'Parking'] },
-        { id: 2, name: 'Place 2', price: 200, description: 'Luxurious spot downtown.', host: 'Bob', amenities: ['Pool', 'WiFi'] },
-        { id: 3, name: 'Place 3', price: 150, description: 'Cozy and affordable.', host: 'Charlie', amenities: ['Breakfast', 'WiFi'] },
+        { id: 1, name: 'Beautiful Beach House', price: 100, description: 'Nice place with a view.', host: 'Alice', amenities: ['WiFi', 'Parking'] },
+        { id: 2, name: 'Cozy Cabin', price: 200, description: 'Luxurious spot downtown.', host: 'Bob', amenities: ['Pool', 'WiFi'] },
+        { id: 3, name: 'Modern Apartment', price: 150, description: 'Cozy and affordable.', host: 'Charlie', amenities: ['Breakfast', 'WiFi'] },
     ];
 
     const reviews = {
         1: [
-            { user: 'John', comment: 'Great stay!', rating: 5 },
-            { user: 'Jane', comment: 'Pretty good.', rating: 4 }
+            { user: 'wilfried pano', comment: 'Great stay!', rating: 5 },
+            { user: 'kanga kouakou brice', comment: 'Pretty good.', rating: 4 }
         ],
         2: [
-            { user: 'Emily', comment: 'Loved it!', rating: 5 }
+            { user: 'Nordine', comment: 'Loved it!', rating: 5 }
         ],
-        3: []
+        3: [
+            {user : 'tchong et Arthur', comment : 'is very beautiful space.' , rating : 4}
+        ]
     };
 
     // Helper: Get URL params
