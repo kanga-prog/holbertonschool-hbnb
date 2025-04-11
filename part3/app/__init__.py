@@ -1,8 +1,9 @@
-from flask import Flask
+from flask import Flask, Response
 from flask_jwt_extended import JWTManager
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from config import configurations
 import os
 
@@ -13,6 +14,20 @@ db = SQLAlchemy()
 def create_app(config_class="development"):
     app = Flask(__name__)
     app.config.from_object(configurations.get(config_class))
+    CORS(app, origins=["http://localhost:8000", "https://localhost:8000"], supports_credentials=True)
+
+    @app.before_request
+    def handle_options():
+        if request.method == 'OPTIONS':
+            # If it's an OPTIONS request, respond with necessary headers
+            response = Response()
+            response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8000'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+            return response
+
+    app.config['PREFERRED_URL_SCHEME'] = 'http'
     
     # Initialiser les extensions
     bcrypt.init_app(app)
