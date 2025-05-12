@@ -1,21 +1,4 @@
-# HBnB Application
-
-## Structure du projet
-
-- `app/` : Code principal de l'application
-  - `api/` : Routes API organisées par version
-  - `models/` : Modèles de données (user, place, review, amenity)
-  - `services/` : Logique de service, y compris la façade
-  - `persistence/` : Gestion du stockage (référentiel en mémoire)
-
-## Installation
-
-1. Clonez le projet.
-2. Installez les dépendances avec :
-   ```bash
-   pip install -r requirements.txt
-
-## er Diagramm
+# er Diagramm
 
     erDiagram
       USER {
@@ -62,8 +45,4 @@
       PLACE ||--o{ PLACE_AMENITY : "has"
       AMENITY ||--o{ PLACE_AMENITY : "belongs to"
     
-      %% Admin permissions (special privileges)
-      USER ||--o{ USER : "can create"
-      USER ||--o{ AMENITY : "can create"
-      
 [![](https://mermaid.ink/img/pako:eNqNU99rwjAQ_ldCnjbQp8Ee-iZbH4RtDN0PNgrlTM42LE1Kks6J-r8v0Wpbq5splOS-7-6-u-RWlGmONKJo7gVkBopEEb9ep_GErHb7sFgO5urm9poI3hitM0JlZC6MdamCAnuQhHMIFiBkz1qCtQttWjlmWksERYRNgRdC7ZBNUm-eH0Z38aVCnXCypcThjyMcLTOidEKrBuHIRAGSlEawlsNcanC-Jh-n4n27VtkRcBCjFwpNupd0UD-J38bx-7_yt0LDrzEJ5YjxQlR2wreyrWQdpJTAsK9j9Bg_jV8-Lu1jc6Hde0j_itNN3YF8OCXcsq9r-wrX6-FQr-qbjkhCfTNtQvuMupuB4p_MN54k7SUGFjMIrqHtMvSD5XCa0q35iLk3n-XOMDwYS5wOLuGjA1qg8XPB_TxuW5hQl6PvNQ0OHMxXoG48Dyqnp0vFaORMhQNqdJXlNJqDtP5UldzXVc_znlKC-tS6qEmbXwztKtg?type=png)](https://mermaid.live/edit#pako:eNqNU99rwjAQ_ldCnjbQp8Ee-iZbH4RtDN0PNgrlTM42LE1Kks6J-r8v0Wpbq5splOS-7-6-u-RWlGmONKJo7gVkBopEEb9ep_GErHb7sFgO5urm9poI3hitM0JlZC6MdamCAnuQhHMIFiBkz1qCtQttWjlmWksERYRNgRdC7ZBNUm-eH0Z38aVCnXCypcThjyMcLTOidEKrBuHIRAGSlEawlsNcanC-Jh-n4n27VtkRcBCjFwpNupd0UD-J38bx-7_yt0LDrzEJ5YjxQlR2wreyrWQdpJTAsK9j9Bg_jV8-Lu1jc6Hde0j_itNN3YF8OCXcsq9r-wrX6-FQr-qbjkhCfTNtQvuMupuB4p_MN54k7SUGFjMIrqHtMvSD5XCa0q35iLk3n-XOMDwYS5wOLuGjA1qg8XPB_TxuW5hQl6PvNQ0OHMxXoG48Dyqnp0vFaORMhQNqdJXlNJqDtP5UldzXVc_znlKC-tS6qEmbXwztKtg)
