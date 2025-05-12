@@ -88,9 +88,9 @@ class PlaceList(Resource):
                 'price': place.price, 
                 'latitude': place.latitude, 
                 'longitude' : place.longitude, 
-                'owner' : place.owner.id, 
-                'reviews' : place.reviews, 
-                'amenities' : place.associated_amenities} for place in places], 200
+                'owner' : place.owner_id, 
+                'reviews' : [review.to_dict() for review in place.reviews] if place.reviews else [], 
+                'amenities' : [amenity.to_dict() for amenity in place.associated_amenities] if place.associated_amenities else []} for place in places], 200
 
 
 @api.route('/<place_id>')

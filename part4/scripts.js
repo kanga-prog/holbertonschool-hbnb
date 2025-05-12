@@ -11,36 +11,33 @@ document.addEventListener('DOMContentLoaded', () => {
           // Appel à la fonction pour tenter de se connecter
           await loginUser(email, password);
       });
-  }
+  }    
+  checkAuthentication();
+  setupPriceFilter();
 });
 
 // Fonction pour se connecter via l'API
 async function loginUser(email, password) {
-  try {
-      const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-      });
+    const response = await fetch('http://127.0.0.1:5000/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    });
 
-      // Vérification si la réponse est réussie (status 200)
-      if (response.ok) {
-          const data = await response.json();
-          // Stockage du JWT dans un cookie
-          document.cookie = `token=${data.access_token}; path=/; max-age=3600`; // Expiration après 1h
+    // Vérification si la réponse est réussie (status 200)
+    if (response.ok) {
+        const data = await response.json();
+        // Stockage du JWT dans un cookie
+        document.cookie = `token=${data.access_token}; path=/; max-age=3600`; // Expiration après 1h
 
-          // Redirection vers la page principale
-          window.location.href = 'index.html';
-      } else {
-          const errorData = await response.json();
-          alert('Login failed: ' + (errorData.message || response.statusText)); // Message d'erreur de l'API
-      }
-  } catch (error) {
-      console.error('Erreur lors de la connexion:', error);
-      alert('Une erreur s\'est produite. Veuillez réessayer plus tard.');
-  }
+        // Redirection vers la page principale
+        window.location.href = 'index.html';
+    } else {
+        const errorData = await response.json();
+        alert('Login failed: ' + (errorData.message || response.statusText)); // Message d'erreur de l'API
+    }
 }
 
 function checkAuthentication() {

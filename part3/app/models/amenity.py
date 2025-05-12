@@ -22,3 +22,10 @@ class Amenity(BaseModel):
             raise ValueError("The amenity must have a name") 
         if not self.description:
             raise ValueError("Please give a description")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+        }

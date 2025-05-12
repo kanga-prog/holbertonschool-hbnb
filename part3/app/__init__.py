@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, request
 from flask_jwt_extended import JWTManager
 from flask_restx import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -14,12 +14,17 @@ db = SQLAlchemy()
 def create_app(config_class="development"):
     app = Flask(__name__)
     app.config.from_object(configurations.get(config_class))
-    CORS(app, origins=["http://localhost:8000", "https://localhost:8000"], supports_credentials=True)
+    CORS(app, resources={r"/api/*": {
+            "origins": "*",  # Autorise toutes les origines
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
 
     @app.before_request
     def handle_options():
         if request.method == 'OPTIONS':
-            # If it's an OPTIONS request, respond with necessary headers
             response = Response()
             response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8000'
             response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
@@ -27,6 +32,16 @@ def create_app(config_class="development"):
             response.headers['Access-Control-Allow-Credentials'] = 'true'
             return response
 
+    @app.after_request
+    def after_request(response):
+        allowed_origins = ["http://127.0.0.1:8000", "http://localhost:8000"]
+        origin = request.headers.get('Origin')
+        if origin in allowed_origins:
+            response.headers['Access-Control-Allow-Origin'] = origin
+            response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+            response.headers['Access-Control-Allow-Credentials'] = 'true'
+        return response
     app.config['PREFERRED_URL_SCHEME'] = 'http'
     
     # Initialiser les extensions

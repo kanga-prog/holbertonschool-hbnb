@@ -27,3 +27,14 @@ class Review(BaseModel):
             raise ValueError("The rating must be between 1 and 5")
         if not self.text:
             raise ValueError("Review text cannot be empty.")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'rating': self.rating,
+            'user_id': self.user_id,
+            'place_id': self.place_id,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+            # Ajoutez d'autres champs si nécessaire
+        }
